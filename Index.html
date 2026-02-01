@@ -2,104 +2,177 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>For Betu 💗</title>
+<title>Be My Valentine 💖</title>
 
 <style>
-body{
-    margin:0;
-    height:100vh;
-    background:linear-gradient(135deg,#ffe6eb,#fff1f4);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-family: 'Segoe UI', sans-serif;
-}
+    body {
+        margin: 0;
+        height: 100vh;
+        background: linear-gradient(135deg, #ffc0cb, #ffe4e1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Segoe UI', sans-serif;
+        overflow: hidden;
+    }
 
-.card{
-    background:white;
-    padding:35px;
-    border-radius:22px;
-    text-align:center;
-    width:360px;
-    box-shadow:0 12px 30px rgba(0,0,0,0.15);
-}
+    .card {
+        background: white;
+        padding: 40px;
+        border-radius: 25px;
+        text-align: center;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+        width: 360px;
+        position: relative;
+        z-index: 2;
+    }
 
-.heart{
-    font-size:42px;
-    animation:beat 1s infinite;
-}
+    h1 {
+        color: #e91e63;
+        margin-bottom: 10px;
+    }
 
-@keyframes beat{
-    0%,100%{transform:scale(1)}
-    50%{transform:scale(1.25)}
-}
+    p {
+        color: #555;
+        font-size: 18px;
+    }
 
-h1{
-    color:#e75480;
-    margin:15px 0 5px;
-}
+    .heart {
+        font-size: 45px;
+        animation: beat 1s infinite;
+        margin-bottom: 10px;
+    }
 
-p{
-    color:#555;
-    font-size:17px;
-    line-height:1.5;
-}
+    @keyframes beat {
+        0%,100% { transform: scale(1); }
+        50% { transform: scale(1.3); }
+    }
 
-.buttons{
-    margin-top:28px;
-    position:relative;
-    height:90px;
-}
+    .buttons {
+        margin-top: 30px;
+        position: relative;
+        height: 110px;
+    }
 
-button{
-    padding:12px 26px;
-    border:none;
-    border-radius:25px;
-    font-size:16px;
-    cursor:pointer;
-}
+    button {
+        padding: 14px 28px;
+        font-size: 16px;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+    }
 
-#yes{
-    background:#e75480;
-    color:white;
-}
+    #yesBtn {
+        background: #ff4d6d;
+        color: white;
+        font-weight: bold;
+    }
 
-#no{
-    background:#eee;
-    position:absolute;
-}
+    #noBtn {
+        position: absolute;
+        background: #eee;
+        color: #333;
+    }
+
+    canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 1;
+    }
 </style>
 </head>
 
 <body>
 
+<canvas id="confetti"></canvas>
+
 <div class="card">
-    <div class="heart">💗</div>
-    <h1>Hey Betu</h1>
-
-    <p>
-        I don’t need a special day to like you…  
-        but today feels like a good excuse to ask 😊
-    </p>
-
+    <div class="heart">💖</div>
+    <h1>Betu 🥰</h1>
+    <p>You make my world brighter every day ✨</p>
     <p><strong>Will you be my Valentine?</strong></p>
 
     <div class="buttons">
-        <button id="yes" onclick="yesClick()">Yes 🤍</button>
-        <button id="no" onmouseover="moveNo()">No 🙃</button>
+        <button id="yesBtn" onclick="celebrate()">YESSS 💕</button>
+        <button id="noBtn" onmouseover="moveNo()">No 🙈</button>
     </div>
 </div>
 
 <script>
-function moveNo(){
-    const no=document.getElementById("no");
-    const box=document.querySelector(".buttons");
-    no.style.left=Math.random()*(box.offsetWidth-60)+"px";
-    no.style.top=Math.random()*(box.offsetHeight-40)+"px";
+/* No button runs away */
+function moveNo() {
+    const noBtn = document.getElementById("noBtn");
+    const box = document.querySelector(".buttons");
+
+    const maxX = box.offsetWidth - noBtn.offsetWidth;
+    const maxY = box.offsetHeight - noBtn.offsetHeight;
+
+    noBtn.style.left = Math.random() * maxX + "px";
+    noBtn.style.top = Math.random() * maxY + "px";
 }
 
-function yesClick(){
-    alert("That smile you just made? Worth everything 💗");
+/* Cute celebration sound */
+function playSound() {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(880, ctx.currentTime);
+    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start();
+    osc.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.4);
+    osc.stop(ctx.currentTime + 0.5);
+}
+
+/* Confetti */
+const canvas = document.getElementById("confetti");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let confetti = [];
+
+function createConfetti() {
+    confetti = [];
+    for (let i = 0; i < 200; i++) {
+        confetti.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            r: Math.random() * 6 + 2,
+            d: Math.random() * 10 + 2,
+            color: `hsl(${Math.random() * 360},100%,70%)`
+        });
+    }
+}
+
+function drawConfetti() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    confetti.forEach(c => {
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+        ctx.fillStyle = c.color;
+        ctx.fill();
+        c.y += c.d;
+        if (c.y > canvas.height) c.y = 0;
+    });
+    requestAnimationFrame(drawConfetti);
+}
+
+/* YES celebration */
+function celebrate() {
+    playSound();
+    createConfetti();
+    drawConfetti();
+    setTimeout(() => {
+        alert("YAYYY 🥹💖 Betu said YES!\nBest Valentine ever 😍");
+    }, 600);
 }
 </script>
 
